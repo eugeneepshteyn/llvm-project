@@ -146,6 +146,9 @@ Expr<SomeDerived> FoldOperation(FoldingContext &, StructureConstructor &&);
 
 template <typename T>
 std::optional<Constant<T>> Folder<T>::GetNamedConstant(const Symbol &symbol0) {
+  if (context_.preventParameterFolding() && symbol0.Rank() > 0) {
+    return std::nullopt;
+  }
   const Symbol &symbol{ResolveAssociations(symbol0)};
   if (IsNamedConstant(symbol)) {
     if (const auto *object{

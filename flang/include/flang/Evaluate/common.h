@@ -241,6 +241,7 @@ public:
         pdtInstance_{that.pdtInstance_},
         analyzingPDTComponentKindSelector_{
             that.analyzingPDTComponentKindSelector_},
+        preventParameterFolding_{that.preventParameterFolding_},
         impliedDos_{that.impliedDos_},
         languageFeatures_{that.languageFeatures_}, tempNames_{that.tempNames_},
         fpMaxminBehavior_{that.fpMaxminBehavior_} {}
@@ -251,6 +252,7 @@ public:
         pdtInstance_{that.pdtInstance_},
         analyzingPDTComponentKindSelector_{
             that.analyzingPDTComponentKindSelector_},
+        preventParameterFolding_{that.preventParameterFolding_},
         impliedDos_{that.impliedDos_},
         languageFeatures_{that.languageFeatures_}, tempNames_{that.tempNames_},
         fpMaxminBehavior_{that.fpMaxminBehavior_} {}
@@ -264,6 +266,7 @@ public:
   bool analyzingPDTComponentKindSelector() const {
     return analyzingPDTComponentKindSelector_;
   }
+  bool preventParameterFolding() const { return preventParameterFolding_; }
   const IntrinsicProcTable &intrinsics() const { return intrinsics_; }
   const TargetCharacteristics &targetCharacteristics() const {
     return targetCharacteristics_;
@@ -313,6 +316,10 @@ public:
     return common::ScopedSet(analyzingPDTComponentKindSelector_, true);
   }
 
+  common::Restorer<bool> PreventParameterFolding() {
+    return common::ScopedSet(preventParameterFolding_, true);
+  }
+
   common::Restorer<std::string> SetRealFlagWarningContext(std::string str) {
     return common::ScopedSet(realFlagWarningContext_, str);
   }
@@ -330,6 +337,7 @@ private:
   const TargetCharacteristics &targetCharacteristics_;
   const semantics::DerivedTypeSpec *pdtInstance_{nullptr};
   bool analyzingPDTComponentKindSelector_{false};
+  bool preventParameterFolding_{false};
   std::optional<parser::CharBlock> moduleFileName_;
   std::map<parser::CharBlock, ConstantSubscript> impliedDos_;
   const common::LanguageFeatureControl &languageFeatures_;

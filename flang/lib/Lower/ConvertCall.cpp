@@ -1507,7 +1507,7 @@ static PreparedDummyArgument preparePresentUserCallActualArgument(
         // possible, we have to create a temporary copies when we pass
         // them down the call stack because of potential compiler
         // generated writes in copy-out.
-        isParameterObjectOrSubObject(entity)) {
+        (arg.mayBeModifiedByCall() && isParameterObjectOrSubObject(entity))) {
       // Make a copy in a temporary.
       auto copy = hlfir::AsExprOp::create(builder, loc, entity);
       mlir::Type storageType = entity.getType();

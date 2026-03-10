@@ -5180,10 +5180,18 @@ MaybeExpr ArgumentAnalyzer::AnalyzeExprOrWholeAssumedSizeArray(
   if (const auto *name{parser::Unwrap<parser::Name>(expr)}) {
     if (name->symbol && semantics::IsAssumedSizeArray(*name->symbol)) {
       auto restorer{context_.AllowWholeAssumedSizeArray()};
+      if (isProcedureCall_) {
+        auto restorer2{context_.GetFoldingContext().PreventParameterFolding()};
+        return context_.Analyze(expr);
+      }
       return context_.Analyze(expr);
     }
   }
   auto restorer{context_.AllowNullPointer()};
+  if (isProcedureCall_) {
+    auto restorer2{context_.GetFoldingContext().PreventParameterFolding()};
+    return context_.Analyze(expr);
+  }
   return context_.Analyze(expr);
 }
 
