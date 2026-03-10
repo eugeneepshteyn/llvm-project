@@ -146,9 +146,6 @@ Expr<SomeDerived> FoldOperation(FoldingContext &, StructureConstructor &&);
 
 template <typename T>
 std::optional<Constant<T>> Folder<T>::GetNamedConstant(const Symbol &symbol0) {
-  if (context_.preventParameterFolding() && symbol0.Rank() > 0) {
-    return std::nullopt;
-  }
   const Symbol &symbol{ResolveAssociations(symbol0)};
   if (IsNamedConstant(symbol)) {
     if (const auto *object{
@@ -163,6 +160,10 @@ std::optional<Constant<T>> Folder<T>::GetNamedConstant(const Symbol &symbol0) {
 
 template <typename T>
 std::optional<Constant<T>> Folder<T>::Folding(ArrayRef &aRef) {
+  if (context_.preventParameterFolding() && aRef.Rank() == 0 &&
+      aRef.base().GetLastSymbol().Rank() > 0) {
+    return std::nullopt;
+  }
   std::vector<Constant<SubscriptInteger>> subscripts;
   int dim{0};
   for (Subscript &ss : aRef.subscript()) {
